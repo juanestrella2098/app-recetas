@@ -1,0 +1,85 @@
+<section class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+  <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Buscar Recetas</h2>
+  <form (ngSubmit)="buscarRecetas()" class="space-y-6">
+
+    <!-- Título -->
+    <div>
+      <label for="titulo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
+      <input
+        id="titulo"
+        name="titulo"
+        [(ngModel)]="filtros.titulo"
+        type="text"
+        class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+        placeholder="Ej. Tarta de manzana"
+      />
+    </div>
+
+    <!-- Ingredientes -->
+    <div>
+      <label for="ingredientes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ingredientes (separados por coma)</label>
+      <input
+        id="ingredientes"
+        name="ingredientes"
+        [(ngModel)]="filtros.ingredientes"
+        type="text"
+        class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+        placeholder="Ej. huevo, leche, azúcar"
+      />
+    </div>
+
+    <!-- Nivel de dificultad -->
+    <div>
+      <label for="nivelDificultad" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nivel de dificultad</label>
+      <select
+        id="nivelDificultad"
+        name="nivelDificultad"
+        [(ngModel)]="filtros.nivelDificultad"
+        class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+      >
+        <option value="">-- Selecciona --</option>
+        <option value="fácil">Fácil</option>
+        <option value="media">Media</option>
+        <option value="difícil">Difícil</option>
+      </select>
+    </div>
+
+    <!-- Tiempo de elaboración -->
+    <div>
+      <label for="tiempoElaboracion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tiempo máximo (minutos)</label>
+      <input
+        id="tiempoElaboracion"
+        name="tiempoElaboracion"
+        [(ngModel)]="filtros.tiempoElaboracion"
+        type="number"
+        min="1"
+        class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+        placeholder="Ej. 30"
+      />
+    </div>
+
+    <!-- Valoración -->
+    <div>
+      <label for="valoracion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Valoración mínima</label>
+      <select
+        id="valoracion"
+        name="valoracion"
+        [(ngModel)]="filtros.valoracion"
+        class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+      >
+        <option value="">-- Selecciona --</option>
+        <option *ngFor="let v of [0,1,2,3,4,5]" [value]="v">{{ v }} ⭐</option>
+      </select>
+    </div>
+
+    <!-- Botón de búsqueda -->
+    <div class="text-right">
+      <button
+        type="submit"
+        class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      >
+        Buscar
+      </button>
+    </div>
+  </form>
+</section>

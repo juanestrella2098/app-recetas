@@ -1,0 +1,81 @@
+<!-- Sección principal de la receta -->
+<section
+  *ngIf="receta() as r"
+  class="p-6 max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow"
+>
+  <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+    {{ r.titulo }}
+  </h1>
+  <p class="mb-4 text-gray-700 dark:text-gray-300">{{ r.descripcion }}</p>
+
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+      Ingredientes
+    </h2>
+    <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+      <li *ngFor="let ingrediente of r.ingredientes">{{ ingrediente }}</li>
+    </ul>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Pasos</h2>
+    <table
+      class="min-w-full table-auto border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+    >
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-700">
+          <th class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-left">Paso</th>
+          <th class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-left">Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paso of r.pasos; let i = index" class="hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">Paso {{ i + 1 }}</td>
+          <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">{{ paso }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
+    <p><strong>Dificultad:</strong> {{ r.nivelDificultad }}</p>
+    <p><strong>Tiempo:</strong> {{ r.tiempoElaboracion }} min</p>
+    <p><strong>Valoración:</strong> {{ r.valoracion }} / 5</p>
+    <p><strong>Pública:</strong> {{ r.publico ? "Sí" : "No" }}</p>
+  </div>
+</section>
+
+<!-- Sección de comentarios -->
+<section class="mt-10 max-w-3xl mx-auto">
+  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Comentarios</h2>
+
+  <div class="space-y-4">
+    <div
+      *ngFor="let comentario of receta()?.comentarios"
+      class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow text-gray-800 dark:text-gray-200"
+    >
+      {{ comentario }}
+    </div>
+  </div>
+</section>
+
+<!-- Sección para añadir comentario -->
+<section class="mt-10 max-w-3xl mx-auto">
+  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Añadir Comentario</h2>
+  <form (ngSubmit)="agregarComentario()" class="mt-2" novalidate>
+    <textarea
+      [(ngModel)]="nuevoComentario"
+      name="comentario"
+      rows="3"
+      class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+      placeholder="Escribe tu comentario aquí..."
+      required
+    ></textarea>
+    <button
+      type="submit"
+      class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+    >
+      Enviar
+    </button>
+  </form>
+</section>

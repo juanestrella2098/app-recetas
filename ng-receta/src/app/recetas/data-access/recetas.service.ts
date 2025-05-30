@@ -10,20 +10,40 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where
+  where,
 } from '@angular/fire/firestore';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthStateService } from '../../shared/data-access/auth-state.service';
 
 export interface Receta {
   id: string;
-  title: string;
-  completed: boolean;
+  titulo: string;
+  descripcion: string;
+  ingredientes: string[];
+  pasos: string[];
+  publico: boolean;
+  nivelDificultad: 'fácil' | 'media' | 'difícil';
+  tiempoElaboracion: number;
+  valoracion: number;
+  comentarios: string[];
+  userId: string;
 }
 
-export type RecetaCreate = Omit<Receta, 'id'>;
+export type RecetaCreate = Omit<
+  Receta,
+  'id' | 'valoracion' | 'comentarios' | 'userId'
+>;
 
 const PATH = 'recetas';
+
+//Usarios
+
+export interface Usuario {
+  uid: string;
+  email: string;
+  createdAt: Date;
+  provider?: string;
+}
 
 @Injectable()
 export class RecetasService {
@@ -32,15 +52,16 @@ export class RecetasService {
   private _authState = inject(AuthStateService);
 
   private _collection = collection(this._firestore, PATH);
-  private _query = query(this._collection, where('userId', '==', this._authState.currentUser?.uid))
+  private _query = query(
+    this._collection,
+    where('userId', '==', this._authState.currentUser?.uid)
+  );
 
   loading = signal<boolean>(true);
 
   getRecetas = toSignal(
     (
-      collectionData(this._query, { idField: 'id' }) as Observable<
-        Receta[]
-      >
+      collectionData(this._query, { idField: 'id' }) as Observable<Receta[]>
     ).pipe(
       tap(() => {
         this.loading.set(false);
@@ -55,7 +76,7 @@ export class RecetasService {
     }
   );
 
-  constructor(){ }
+  constructor() {}
 
   getReceta(id: string) {
     const docRef = doc(this._collection, id);
@@ -63,16 +84,64 @@ export class RecetasService {
   }
 
   create(receta: RecetaCreate) {
-    return addDoc(this._collection, {...receta, userId:this._authState.currentUser?.uid });
+    return addDoc(this._collection, {
+      ...receta,
+      valoracion: 0,
+      comentarios: [],
+      userId: this._authState.currentUser?.uid,
+    });
   }
 
   update(receta: RecetaCreate, id: string) {
     const docRef = doc(this._collection, id);
-    return updateDoc(docRef, {...receta, userId:this._authState.currentUser?.uid });
+    return updateDoc(docRef, {
+      ...receta,
+      userId: this._authState.currentUser?.uid,
+    });
   }
 
   delete(id: string) {
     const docRef = doc(this._collection, id);
     return deleteDoc(docRef);
   }
+
+  updateComentarios(id: string, comentarios: string[]) {
+    const docRef = doc(this._collection, id);
+    return updateDoc(docRef, { comentarios });
+  }
+
+  getRecetasPublicas = toSignal(
+    (
+      collectionData(query(this._collection, where('publico', '==', true)), {
+        idField: 'id',
+      }) as Observable<Receta[]>
+    ).pipe(
+      tap(() => {
+        this.loading.set(false);
+      }),
+      catchError((error) => {
+        this.loading.set(false);
+        return throwError(() => error);
+      })
+    ),
+    {
+      initialValue: [],
+    }
+  );
+
+  // Usuarios
+
+  getUsuarios(): Observable<Usuario[]> {
+    const usuariosRef = collection(this._firestore, 'usuarios');
+    return collectionData(usuariosRef, { idField: 'uid' }) as Observable<
+      Usuario[]
+    >;
+  }
+
+getRecetasPublicasDeUsuario(userId: string): Observable<Receta[]> {
+  const recetasRef = collection(this._firestore, 'recetas');
+  const q = query(recetasRef, where('publico', '==', true), where('userId', '==', userId));
+  return collectionData(q, { idField: 'id' }) as Observable<Receta[]>;
+}
+
 }

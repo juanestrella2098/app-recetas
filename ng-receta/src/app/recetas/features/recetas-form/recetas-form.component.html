@@ -1,42 +1,122 @@
 <section class="mx-auto w-full max-w-screen-sm px-4">
   <form class="space-y-4 md:space-y-6" [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Título -->
     <div>
       <label
-        for="title"
+        for="titulo"
         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Titulo</label
+        >Título</label
       >
       <input
         type="text"
-        name="title"
-        id="title"
-        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        formControlName="title"
+        id="titulo"
+        formControlName="titulo"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
       />
-      <!--  @if(isRequired('email')){
-            <small class="text-red-400">Este campo es obligatorio</small>
-            } @if(hasEmailError()){
-            <small class="text-red-400">El correo debe ser válido</small>
-            } -->
     </div>
+
+    <!-- Descripción -->
+    <div>
+      <label
+        for="descripcion"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Descripción</label
+      >
+      <textarea
+        id="descripcion"
+        formControlName="descripcion"
+        rows="3"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      ></textarea>
+    </div>
+
+    <!-- Ingredientes -->
+    <div>
+      <label
+        for="ingredientes"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Ingredientes (separados por coma)</label
+      >
+      <input
+        type="text"
+        id="ingredientes"
+        [value]="form.value.ingredientes?.join(', ')"
+        (input)="onIngredientesInput($event)"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      />
+    </div>
+
+    <!-- Pasos -->
+    <div>
+      <label
+        for="pasos"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Pasos (separados por coma)</label
+      >
+
+      <input
+        type="text"
+        id="pasos"
+        [value]="form.value.pasos?.join(', ')"
+        (input)="onPasosInput($event)"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      />
+    </div>
+
+    <!-- Público -->
     <div>
       <label class="inline-flex items-center cursor-pointer">
-        <input formControlName="completed" type="checkbox" value="" class="sr-only peer" />
+        <input formControlName="publico" type="checkbox" class="sr-only peer" />
         <div
-          class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"
+          class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"
         ></div>
-        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-          >Completado</span
+        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >Público</span
         >
       </label>
     </div>
-    <button
-    [disabled]="loading()"
-      type="submit"
-      class=" text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-    >
-      {{loading() ? 'Guardando...': 'Guardar'}}
-    </button>
 
+    <!-- Nivel de dificultad -->
+    <div>
+      <label
+        for="nivelDificultad"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Nivel de dificultad</label
+      >
+      <select
+        id="nivelDificultad"
+        formControlName="nivelDificultad"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      >
+        <option value="fácil">Fácil</option>
+        <option value="media">Media</option>
+        <option value="difícil">Difícil</option>
+      </select>
+    </div>
+
+    <!-- Tiempo de elaboración -->
+    <div>
+      <label
+        for="tiempoElaboracion"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Tiempo de elaboración (minutos)</label
+      >
+      <input
+        type="number"
+        id="tiempoElaboracion"
+        formControlName="tiempoElaboracion"
+        min="1"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      />
+    </div>
+
+    <!-- Botón de envío -->
+    <button
+      [disabled]="loading()"
+      type="submit"
+      class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+    >
+      {{ loading() ? "Guardando..." : "Guardar" }}
+    </button>
   </form>
 </section>

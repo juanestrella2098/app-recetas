@@ -7,7 +7,6 @@ import { RecetasService } from '../../data-access/recetas.service';
   selector: 'app-recetas-list',
   imports: [TableComponent, RouterLink],
   templateUrl: './recetas-list.component.html',
-  styles: ``,
   providers: [RecetasService]
 })
 export default class RecetasListComponent {

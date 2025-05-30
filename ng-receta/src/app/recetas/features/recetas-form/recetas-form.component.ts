@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
   imports: [ReactiveFormsModule],
   templateUrl: './recetas-form.component.html',
   styleUrl: './recetas-form.component.scss',
-  providers: [RecetasService]
+  providers: [RecetasService],
 })
 export default class RecetasFormComponent {
   private _formBuilder = inject(FormBuilder);
@@ -32,9 +32,15 @@ export default class RecetasFormComponent {
   idReceta = input.required<string>();
 
   form = this._formBuilder.group({
-    title: this._formBuilder.control('', Validators.required),
-    completed: this._formBuilder.control(false, Validators.required),
-  });
+  titulo: this._formBuilder.control('', Validators.required),
+  descripcion: this._formBuilder.control('', Validators.required),
+  ingredientes: this._formBuilder.control<string[]>([], Validators.required),
+  pasos: this._formBuilder.control<string[]>([], Validators.required),
+  publico: this._formBuilder.control(false, Validators.required),
+  nivelDificultad: this._formBuilder.control<'fácil' | 'media' | 'difícil'>('fácil', Validators.required),
+  tiempoElaboracion: this._formBuilder.control<number>(0, [Validators.required, Validators.min(1)]),
+});
+
 
   constructor() {
     effect(() => {
@@ -50,10 +56,24 @@ export default class RecetasFormComponent {
 
     try {
       this.loading.set(true);
-      const { title, completed } = this.form.value;
+      const {
+        titulo,
+        descripcion,
+        ingredientes,
+        pasos,
+        publico,
+        nivelDificultad,
+        tiempoElaboracion,
+      } = this.form.value;
+
       const receta: RecetaCreate = {
-        title: title || '',
-        completed: !!completed,
+        titulo: titulo || '',
+        descripcion: descripcion || '',
+        ingredientes: ingredientes || [],
+        pasos: pasos || [],
+        publico: !!publico,
+        nivelDificultad: nivelDificultad || 'fácil',
+        tiempoElaboracion: tiempoElaboracion || 0,
       };
 
       const id = this.idReceta();
@@ -66,7 +86,7 @@ export default class RecetasFormComponent {
       toast.success(`Receta ${id ? 'actualizada' : 'creada'} correctamente`);
       this._router.navigateByUrl('/recetas');
     } catch (error) {
-      toast.success('Ocurrio un problema');
+      toast.error('Ocurrió un problema');
     } finally {
       this.loading.set(false);
     }
@@ -82,5 +102,17 @@ export default class RecetasFormComponent {
     this.form.patchValue(receta);
   }
 
-  
+  onIngredientesInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const ingredientes = input.value.split(',').map(i => i.trim());
+  this.form.controls['ingredientes'].setValue(ingredientes);
+}
+
+onPasosInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const pasos = input.value.split(',').map(p => p.trim());
+  this.form.controls['pasos'].setValue(pasos);
+}
+
+
 }

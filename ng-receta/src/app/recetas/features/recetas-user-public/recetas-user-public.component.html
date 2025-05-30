@@ -1,0 +1,44 @@
+<section class="mx-auto w-full max-w-screen-lg px-4">
+  <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+    Recetas públicas del usuario
+  </h2>
+
+  <ng-container *ngIf="cargando(); else tabla">
+    <p class="text-gray-600 dark:text-gray-300">Cargando recetas...</p>
+  </ng-container>
+
+  <ng-template #tabla>
+    <div class="relative overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th class="px-6 py-3">Título</th>
+            <th class="px-6 py-3">Valoración</th>
+            <th class="px-6 py-3">Tiempo</th>
+            <th class="px-6 py-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let receta of recetas()" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <td class="px-6 py-4">{{ receta.titulo }}</td>
+            <td class="px-6 py-4">{{ receta.valoracion }} / 5</td>
+            <td class="px-6 py-4">{{ receta.tiempoElaboracion }} min</td>
+            <td class="px-6 py-4">
+              <a
+                [routerLink]="['/recetas/view', receta.id]"
+                class="text-blue-600 hover:underline dark:text-blue-400"
+              >
+                Ver
+              </a>
+            </td>
+          </tr>
+          <tr *ngIf="recetas().length === 0">
+            <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+              No hay recetas públicas de este usuario.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+</section>

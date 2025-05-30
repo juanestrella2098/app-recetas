@@ -1,0 +1,42 @@
+<section class="mx-auto w-full max-w-screen-lg px-4">
+  <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+    Lista de usuarios
+  </h2>
+
+  <ng-container *ngIf="cargando(); else tabla">
+    <p class="text-gray-600 dark:text-gray-300">Cargando usuarios...</p>
+  </ng-container>
+
+  <ng-template #tabla>
+    <div class="relative overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead
+          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th class="px-6 py-3">UID</th>
+            <th class="px-6 py-3">Email</th>
+            <th class="px-6 py-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let usuario of usuarios()"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+          >
+            <td class="px-6 py-4">{{ usuario.uid }}</td>
+            <td class="px-6 py-4">{{ usuario.email }}</td>
+            <td class="px-6 py-4">
+              <a
+                [routerLink]="['/recetas/show/user', usuario.uid]"
+                class="text-sm text-blue-600 hover:underline dark:text-blue-400"
+              >
+                Ver recetas públicas
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+</section>

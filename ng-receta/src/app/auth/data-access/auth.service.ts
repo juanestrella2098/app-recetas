@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -17,24 +18,43 @@ export interface User {
 })
 export class AuthService {
   private _auth = inject(Auth);
+  private _firestore = inject(Firestore);
 
-  signUp(user: User) {
-    return createUserWithEmailAndPassword(
+  async signUp(user: User) {
+    const cred = await createUserWithEmailAndPassword(
       this._auth,
       user.email,
       user.password
     );
+    const uid = cred.user.uid;
+    const userRef = doc(this._firestore, 'usuarios', uid);
+    return await setDoc(userRef, {
+      uid: uid,
+      email: user.email,
+      createdAt: new Date(),
+    });
   }
 
   signIn(user: User) {
     return signInWithEmailAndPassword(this._auth, user.email, user.password);
   }
 
-  signInWithGoogle() {
-    const proiver = new GoogleAuthProvider();
+  async signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
 
-    //proiver.setCustomParameters({prompt: 'select_account'});
-    
-    return signInWithPopup(this._auth, proiver);
+    const cred = await signInWithPopup(this._auth, provider);
+    const uid = cred.user.uid;
+    const email = cred.user.email;
+    const userRef = doc(this._firestore, 'usuarios', uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        uid: uid,
+        email: email,
+        createdAt: new Date(),
+        provider: 'google',
+      });
+    }
+    return cred;
   }
 }
