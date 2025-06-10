@@ -10,7 +10,7 @@ import { AuthStateService } from '../data-access/auth-state.service';
     <header class="h-[80px] mb-8 w-full max-w-screen-lg mx-auto px-4">
       <nav class="flex items-center justify-between h-full">
         <div class="flex items-center gap-4">
-          <a class="text-2xl font-bold" routerLink="/recetas">Ng Recetas</a>
+          <a class="text-2xl font-bold" routerLink="/recetas">Recetitas</a>
           <a
             routerLink="/recetas/search"
             class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-lg px-4 py-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"

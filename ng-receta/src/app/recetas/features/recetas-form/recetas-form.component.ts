@@ -32,15 +32,20 @@ export default class RecetasFormComponent {
   idReceta = input.required<string>();
 
   form = this._formBuilder.group({
-  titulo: this._formBuilder.control('', Validators.required),
-  descripcion: this._formBuilder.control('', Validators.required),
-  ingredientes: this._formBuilder.control<string[]>([], Validators.required),
-  pasos: this._formBuilder.control<string[]>([], Validators.required),
-  publico: this._formBuilder.control(false, Validators.required),
-  nivelDificultad: this._formBuilder.control<'fácil' | 'media' | 'difícil'>('fácil', Validators.required),
-  tiempoElaboracion: this._formBuilder.control<number>(0, [Validators.required, Validators.min(1)]),
-});
-
+    titulo: this._formBuilder.control('', Validators.required),
+    descripcion: this._formBuilder.control('', Validators.required),
+    ingredientes: this._formBuilder.control<string[]>([], Validators.required),
+    pasos: this._formBuilder.control<string[]>([], Validators.required),
+    publico: this._formBuilder.control(false, Validators.required),
+    nivelDificultad: this._formBuilder.control<'fácil' | 'media' | 'difícil'>(
+      'fácil',
+      Validators.required
+    ),
+    tiempoElaboracion: this._formBuilder.control<number>(0, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+  });
 
   constructor() {
     effect(() => {
@@ -74,6 +79,8 @@ export default class RecetasFormComponent {
         publico: !!publico,
         nivelDificultad: nivelDificultad || 'fácil',
         tiempoElaboracion: tiempoElaboracion || 0,
+        totalVotos: 0,
+        totalPuntos: 0,
       };
 
       const id = this.idReceta();
@@ -103,16 +110,14 @@ export default class RecetasFormComponent {
   }
 
   onIngredientesInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const ingredientes = input.value.split(',').map(i => i.trim());
-  this.form.controls['ingredientes'].setValue(ingredientes);
-}
+    const input = event.target as HTMLInputElement;
+    const ingredientes = input.value.split(',').map((i) => i.trim());
+    this.form.controls['ingredientes'].setValue(ingredientes);
+  }
 
-onPasosInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const pasos = input.value.split(',').map(p => p.trim());
-  this.form.controls['pasos'].setValue(pasos);
-}
-
-
+  onPasosInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const pasos = input.value.split(',').map((p) => p.trim());
+    this.form.controls['pasos'].setValue(pasos);
+  }
 }

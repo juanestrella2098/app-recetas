@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  sendPasswordResetEmail,
 } from '@angular/fire/auth';
 
 export interface User {
@@ -56,5 +57,9 @@ export class AuthService {
       });
     }
     return cred;
+  }
+
+  async resetPassword(email: string) {
+    return await sendPasswordResetEmail(this._auth, email);
   }
 }

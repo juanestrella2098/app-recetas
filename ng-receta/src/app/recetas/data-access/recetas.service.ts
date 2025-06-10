@@ -25,6 +25,9 @@ export interface Receta {
   nivelDificultad: 'fácil' | 'media' | 'difícil';
   tiempoElaboracion: number;
   valoracion: number;
+  totalVotos: number;
+  totalPuntos: number;
+
   comentarios: string[];
   userId: string;
 }
@@ -78,6 +81,8 @@ export class RecetasService {
 
   constructor() {}
 
+  // Recetas
+
   getReceta(id: string) {
     const docRef = doc(this._collection, id);
     return getDoc(docRef);
@@ -87,6 +92,8 @@ export class RecetasService {
     return addDoc(this._collection, {
       ...receta,
       valoracion: 0,
+      totalVotos: 0,
+      totalPuntos: 0,
       comentarios: [],
       userId: this._authState.currentUser?.uid,
     });
@@ -129,6 +136,25 @@ export class RecetasService {
     }
   );
 
+  async votarReceta(id: string, puntuacion: number) {
+  const docRef = doc(this._collection, id);
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) return;
+
+  const data = snapshot.data() as Receta;
+  const totalPuntos = (data.totalPuntos || 0) + puntuacion;
+  const totalVotos = (data.totalVotos || 0) + 1;
+  const valoracion = Math.floor(totalPuntos / totalVotos);
+
+  return updateDoc(docRef, {
+    totalPuntos,
+    totalVotos,
+    valoracion,
+  });
+}
+
+
   // Usuarios
 
   getUsuarios(): Observable<Usuario[]> {
@@ -138,10 +164,13 @@ export class RecetasService {
     >;
   }
 
-getRecetasPublicasDeUsuario(userId: string): Observable<Receta[]> {
-  const recetasRef = collection(this._firestore, 'recetas');
-  const q = query(recetasRef, where('publico', '==', true), where('userId', '==', userId));
-  return collectionData(q, { idField: 'id' }) as Observable<Receta[]>;
-}
-
+  getRecetasPublicasDeUsuario(userId: string): Observable<Receta[]> {
+    const recetasRef = collection(this._firestore, 'recetas');
+    const q = query(
+      recetasRef,
+      where('publico', '==', true),
+      where('userId', '==', userId)
+    );
+    return collectionData(q, { idField: 'id' }) as Observable<Receta[]>;
+  }
 }

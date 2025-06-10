@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 export default class RecetasSearchPageComponent {
   private recetaService = inject(RecetasService);
   private authState = inject(AuthStateService);
-  private router = inject(Router); // ✅ Inyección correcta del Router
+  private router = inject(Router);
 
   filtros = {
     titulo: '',

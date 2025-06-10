@@ -11,6 +11,5 @@ import { RecetasService } from '../../data-access/recetas.service';
 })
 export default class RecetasListComponent {
 
-
    recetasService = inject(RecetasService);
 }

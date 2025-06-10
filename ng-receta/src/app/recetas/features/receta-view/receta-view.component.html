@@ -1,4 +1,3 @@
-<!-- Sección principal de la receta -->
 <section
   *ngIf="receta() as r"
   class="p-6 max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow"
@@ -6,6 +5,15 @@
   <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
     {{ r.titulo }}
   </h1>
+  <div *ngIf="!esDelUsuarioActual" class="mb-4">
+    <button
+      (click)="copiarReceta()"
+      class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+    >
+      Copiar receta a mi cuenta
+    </button>
+  </div>
+
   <p class="mb-4 text-gray-700 dark:text-gray-300">{{ r.descripcion }}</p>
 
   <div class="mb-4">
@@ -24,14 +32,29 @@
     >
       <thead>
         <tr class="bg-gray-100 dark:bg-gray-700">
-          <th class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-left">Paso</th>
-          <th class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-left">Descripción</th>
+          <th
+            class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-left"
+          >
+            Paso
+          </th>
+          <th
+            class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-left"
+          >
+            Descripción
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paso of r.pasos; let i = index" class="hover:bg-gray-50 dark:hover:bg-gray-600">
-          <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">Paso {{ i + 1 }}</td>
-          <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">{{ paso }}</td>
+        <tr
+          *ngFor="let paso of r.pasos; let i = index"
+          class="hover:bg-gray-50 dark:hover:bg-gray-600"
+        >
+          <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">
+            Paso {{ i + 1 }}
+          </td>
+          <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">
+            {{ paso }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -43,11 +66,25 @@
     <p><strong>Valoración:</strong> {{ r.valoracion }} / 5</p>
     <p><strong>Pública:</strong> {{ r.publico ? "Sí" : "No" }}</p>
   </div>
+<div *ngIf="!esDelUsuarioActual" class="mt-4">
+  <p class="text-gray-800 dark:text-white mb-2">Valorar esta receta:</p>
+  <div class="flex gap-2">
+    <button
+      *ngFor="let punto of [1,2,3,4,5]"
+      (click)="votar(punto)"
+      class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+    >
+      {{ punto }} ⭐
+    </button>
+  </div>
+</div>
+
 </section>
 
-<!-- Sección de comentarios -->
 <section class="mt-10 max-w-3xl mx-auto">
-  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Comentarios</h2>
+  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+    Comentarios
+  </h2>
 
   <div class="space-y-4">
     <div
@@ -59,9 +96,10 @@
   </div>
 </section>
 
-<!-- Sección para añadir comentario -->
 <section class="mt-10 max-w-3xl mx-auto">
-  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Añadir Comentario</h2>
+  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+    Añadir Comentario
+  </h2>
   <form (ngSubmit)="agregarComentario()" class="mt-2" novalidate>
     <textarea
       [(ngModel)]="nuevoComentario"

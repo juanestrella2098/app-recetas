@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { RecetasService, Receta } from '../../data-access/recetas.service';
 import { FormsModule } from '@angular/forms';
+import { AuthStateService } from '../../../shared/data-access/auth-state.service';
 
 @Component({
   selector: 'app-receta-view',
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export default class RecetaViewComponent {
   private route = inject(ActivatedRoute);
   private recetaService = inject(RecetasService);
+  private authState = inject(AuthStateService);
 
   receta = signal<Receta | null>(null);
   nuevoComentario = '';
@@ -34,27 +36,63 @@ export default class RecetaViewComponent {
     }
   }
 
-async agregarComentario(event?: Event) {
-  event?.preventDefault();
-  event?.stopPropagation();
+  async agregarComentario(event?: Event) {
+    event?.preventDefault();
+    event?.stopPropagation();
 
-  const recetaActual = this.receta();
-  if (!recetaActual || !recetaActual.id || !this.nuevoComentario.trim()) return;
+    const recetaActual = this.receta();
+    if (!recetaActual || !recetaActual.id || !this.nuevoComentario.trim())
+      return;
 
-  const nuevoComentario = this.nuevoComentario.trim();
+    const nuevoComentario = this.nuevoComentario.trim();
 
-  const comentariosActualizados = Array.isArray(recetaActual.comentarios)
-    ? [...recetaActual.comentarios, nuevoComentario]
-    : [nuevoComentario];
+    const comentariosActualizados = Array.isArray(recetaActual.comentarios)
+      ? [...recetaActual.comentarios, nuevoComentario]
+      : [nuevoComentario];
 
-  await this.recetaService.updateComentarios(recetaActual.id, comentariosActualizados);
+    await this.recetaService.updateComentarios(
+      recetaActual.id,
+      comentariosActualizados
+    );
 
-  this.receta.set({
-    ...recetaActual,
-    comentarios: comentariosActualizados,
-  });
+    this.receta.set({
+      ...recetaActual,
+      comentarios: comentariosActualizados,
+    });
 
-  this.nuevoComentario = '';
-}
+    this.nuevoComentario = '';
+  }
 
+  get esDelUsuarioActual(): boolean {
+    const recetaActual = this.receta();
+    return recetaActual?.userId === this.authState.currentUser?.uid;
+  }
+
+  async copiarReceta() {
+    const recetaActual = this.receta();
+    if (!recetaActual) return;
+
+    const recetaParaCopiar = {
+      titulo: recetaActual.titulo,
+      descripcion: recetaActual.descripcion,
+      ingredientes: recetaActual.ingredientes,
+      pasos: recetaActual.pasos,
+      publico: recetaActual.publico,
+      nivelDificultad: recetaActual.nivelDificultad,
+      tiempoElaboracion: recetaActual.tiempoElaboracion,
+      totalVotos: 0,
+      totalPuntos: 0,
+    };
+
+    await this.recetaService.create(recetaParaCopiar);
+    alert('Receta copiada a tu cuenta.');
+  }
+
+  async votar(puntuacion: number) {
+    const recetaActual = this.receta();
+    if (!recetaActual || this.esDelUsuarioActual) return;
+
+    await this.recetaService.votarReceta(recetaActual.id, puntuacion);
+    await this.loadReceta(recetaActual.id); // Recargar receta actualizada
+  }
 }

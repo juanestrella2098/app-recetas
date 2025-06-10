@@ -2,7 +2,6 @@
   <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Buscar Recetas</h2>
   <form (ngSubmit)="buscarRecetas()" class="space-y-6">
 
-    <!-- Título -->
     <div>
       <label for="titulo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
       <input
@@ -15,7 +14,6 @@
       />
     </div>
 
-    <!-- Ingredientes -->
     <div>
       <label for="ingredientes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ingredientes (separados por coma)</label>
       <input
@@ -28,7 +26,6 @@
       />
     </div>
 
-    <!-- Nivel de dificultad -->
     <div>
       <label for="nivelDificultad" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nivel de dificultad</label>
       <select
@@ -44,7 +41,6 @@
       </select>
     </div>
 
-    <!-- Tiempo de elaboración -->
     <div>
       <label for="tiempoElaboracion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tiempo máximo (minutos)</label>
       <input
@@ -58,7 +54,6 @@
       />
     </div>
 
-    <!-- Valoración -->
     <div>
       <label for="valoracion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Valoración mínima</label>
       <select
@@ -72,7 +67,6 @@
       </select>
     </div>
 
-    <!-- Botón de búsqueda -->
     <div class="text-right">
       <button
         type="submit"
